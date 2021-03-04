@@ -1,24 +1,42 @@
-import logo from './logo.svg';
-import './App.css';
+import Header from './components/Header'
+import Form from './components/Form'
+import ListNews from './components/ListNews'
+import { useState, useEffect } from 'react'
 
 function App() {
+
+  // Definit categoría y noticias
+  const [category, setCategory] = useState('')
+  const [news, setNews] = useState([])
+
+
+  useEffect(() => {
+    const consultAPI = async () => {
+      const url = `http://newsapi.org/v2/top-headlines?country=us&category=${category}&apiKey=7a7fc24a0f3b4713846d26b074098b07`
+    
+      const response = await fetch(url)
+      const news = await response.json()
+
+      setNews(news.articles)
+    }
+
+    consultAPI()
+  }, [category])
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <Header
+        title='Actualidad en EEUU'
+      />
+      <div className='container white'>
+        <Form 
+          setCategory={setCategory}
+        />
+        <ListNews
+          news={news}
+          />
+      </div>
+    </>
   );
 }
 
